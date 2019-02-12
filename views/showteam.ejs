@@ -1,0 +1,47 @@
+<%include ../partials/header %>
+
+<div class= "container">
+    <h1>TEAM "<%=team.name%>" </h1>
+    <img src="<%=team.image%>">
+    <h6><em>Created by <%= team.author.username %></em></h6>
+    <h5>PLAYERS:</h5>
+    <% team.players.forEach(function(player){ %>
+        <p><%=player.username%></p>
+        <% if(currentUser && team.author.id.equals(currentUser._id)){ %>
+            <form action="/teams/<%=team._id%>/removeplayer/<%=player._id%>" method="POST">
+                <button class="btn btn-danger">Remove Player</button>
+            </form>
+            <hr>
+        <% } %>
+    <% }) %>
+    <% if(currentUser && team.author.id.equals(currentUser._id)){ %>
+        <% requests.forEach(function(requests){ %>
+            <p><b><%=requests.username%> </b> requested to join your team!</p>
+            <form action="/teams/<%=team._id%>/addplayer/<%=requests._id%>" method="POST">
+                <button class="btn btn-success">ACCEPT</button>    
+            </form>
+            <form action="/teams/<%=team._id%>/addplayer/<%=requests._id%>?_method=DELETE" method="POST">
+                <button class="btn btn-danger">REJECT</button>
+            </form>
+        <% }) %>
+        <hr>
+        <a href="/teams/<%=team._id%>/edit" class="btn btn-warning">EDIT TEAM</a>
+        <form action="/teams/<%=team._id%>?_method=DELETE" method="POST">
+        <button class="btn btn-danger">DELETE TEAM</button>
+        </form>
+    <% } %>
+    
+    
+    <form action="/teams/<%=team._id%>/request" method="POST">
+        <button class="btn btn-primary">REQUEST TO JOIN TEAM</button>
+    </form>  
+    
+   
+    
+</div>
+
+
+
+
+
+<%include ../partials/footer %>

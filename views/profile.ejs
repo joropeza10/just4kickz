@@ -1,0 +1,42 @@
+<% include ../partials/header %> 
+
+
+<div class="container">
+    <div>
+        <h1>USER PROFILE "<%=user.username%>"</h1>
+        <hr>
+        <% if(currentUser && user._id.equals(currentUser._id)){ %>
+            <div class="row">
+            <div class="col-lg-6">
+              <a href="/users/profile/<%=user._id%>/edit" class="btn btn-primary">EDIT PROFILE</a>
+            <form action="/users/profile/<%=user._id%>?_method=DELETE" method="POST">
+            <button class="btn btn-danger">DELETE PROFILE</button>
+             </form>  
+            <a class="btn btn-warning" href="/teams/newteam">CREATE TEAM</a>  
+            </div>
+             </div>
+        <% } %>
+        <div>
+            <h2><%=user.firstName%></h2>
+            <h2><%=user.lastName%></h2>
+            <h2><%=user.email%></h2>
+            <h2><%=user.phone%></h2>
+        </div>
+        <div>
+            <h3>CREATED TEAMS:</h3>
+            <% team.forEach(function(team){ %>
+                <h2><%=team.name%></h2>
+                <img src="<%=team.image%>">
+                <h6><em><a href="/teams/<%=team._id%>">Team Profile</a></em></h6>
+            <% }) %>
+        </div>
+        
+    </div>
+</div>
+
+
+
+
+
+
+<% include ../partials/footer %>  

@@ -1,0 +1,39 @@
+<% include ../partials/header %>
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">   
+            <h2 style="text-align: center">Leagues</h2>
+        </div>
+    </div>
+    <div class="row text-center d-flex justify-content-around">
+        <% leagues.forEach(function(league){ %>
+            <div class="col-md-4 col-sm-6 ">
+                <div class="card border-secondary mb-3"  style="width: 18rem;">
+                    <img class="card-img-top" src= <%= league.image    %> >   
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title ">
+                         <%= league.name %>
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted"><em>Created by <a href="/users/profile/<%=league.author.id%>"><%= league.author.username %></a></em></h6>
+                </div>
+                <p>
+                   <a href="/leagues/<%=league._id%>" class="btn btn-primary">More Info </a> 
+                   <% if(currentUser && league.author.id.equals(currentUser._id)) { %>
+                            <a href="/leagues/<%=league._id%>/edit" class="btn btn-primary">EDIT </a>
+                           <form action="/leagues/<%=league._id%>?_method=DELETE" method="POST">
+                               <button class="btn btn-danger">DELETE</button>
+                           </form>
+                   <% } %>
+                </p>
+            </div>
+    <% }) %> 
+    </div>    
+    
+</div>
+
+
+<% include ../partials/footer %>

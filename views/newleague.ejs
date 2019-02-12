@@ -1,0 +1,23 @@
+<% include ../partials/header %> 
+
+
+<div class= "container">
+    
+    <h1 style="text-align: center">Create League</h1>
+    <div style="width: 30%; margin:30px auto;">
+        <form action="/leagues/newleague" method = "POST">
+            <div class="form-group">
+            <p>Enter League Name:</p>
+            <input class="form-control" type="text" name="league[name]" placeholder="League Name">
+            </div>
+            <div class="form-group">
+            <p>Enter image</p>
+            <input class="form-control" type="text" name="league[image]" placeholder="Image URL">
+            </div>
+            <button class="btn btn-primary btn-block">Create League</button>
+        </form>
+    </div>
+</div>
+
+
+<% include ../partials/footer %> 
