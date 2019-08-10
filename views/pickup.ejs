@@ -1,7 +1,37 @@
 <% include ../partials/header %>
 
-<h1>PICK UP GAMES PAGE</h1>
 
+<div class= "container">
+    
+    <h1 style="text-align: center">Save your place in our pickup games!</h1>
+    
+    <% if(currentUser) { %>
+        <div style="width: 30%; margin:30px auto;">
+            <form>
+                <div class="form-group">
+                <p>Enter your credit card information</p>
+                <input class="form-control" type="text" name="league[image]" placeholder="Credit card number">
+                </div>
+                <div class="form-group">
+                <input class="form-control" type="text" name="league[image]" placeholder="Name as shown in card">
+                </div>
+                <div class="form-group">
+                <input class="form-control" type="text" name="league[image]" placeholder="Expiration date MM/DD">
+                </div>
+                <div class="custom-select" style="width:200px;">
+                  <select>
+                    <option value="0">Select Time:</option>
+                    <option value="1">8:00 pm</option>
+                    <option value="2">9:00 pm</option>
+                  </select>
+                </div>
+                <button class="btn btn-primary btn-block">Pay $5.00</button>
+            </form>
+        </div>                        
+    <% } %>
+    
+   
+</div>
 
 
 <% include ../partials/footer %>

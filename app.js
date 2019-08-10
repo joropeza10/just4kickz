@@ -11,6 +11,8 @@ var express         = require("express"),
     Requests        = require("./models/requests"),
     Leagues         = require("./models/leagues");
     
+
+    
     
 // var userRoutes      = require("./routes/users"),
 //     authRoutes      = require("./routes/auth"),
@@ -26,7 +28,12 @@ var express         = require("express"),
 
 
 
-mongoose.connect("mongodb://localhost/team_db", {useNewUrlParser: true});
+mongoose.connect("mongodb+srv://oropezaDev:vempfir55@cluster0-dmm0o.mongodb.net/test?retryWrites=true&w=majority", 
+                {useNewUrlParser: true, useCreateIndex: true}).then(() => {
+                    console.log("connected to DB Succesfully");
+                }).catch(err => {
+                    console.log("Error, " + err.message);
+                });
 
 
 app.use(require("express-session")({
@@ -36,7 +43,7 @@ app.use(require("express-session")({
 }));
 
 
-
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
@@ -44,6 +51,7 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(express.static(__dirname  + "/public"))
 app.set("view engine", "ejs");
 
 app.use(override("_method"));
@@ -54,6 +62,8 @@ app.use(override("_method"));
 // currentUser ///
 app.use(function(req,res,next){
     res.locals.currentUser = req.user;
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error");
     next();
 })
 
@@ -68,7 +78,7 @@ app.get("/", function(req,res){
 // app.use("/leagues", leagueRoutes);
 // app.use("/teams", teamRoutes);
 
-app.get("/users/profile/:id", function(req,res){
+app.get("/users/profile/:id", isLoggedIn, function(req,res){
     User.findById(req.params.id, function(err, foundUser){
         if(err){
             console.log(err);
@@ -85,12 +95,18 @@ app.get("/users/profile/:id", function(req,res){
 })
 
 
-app.get("/users/profile/:id/edit", function(req,res){
+app.get("/users/profile/:id/edit", isLoggedIn, function(req,res){
     User.findById(req.params.id, function(err, foundUser) {
         if(err){
             console.log(err);
+            req.flash("error", err.message)
         }else{
-            res.render("edituser", {user:foundUser});
+            if(foundUser._id.equals(req.user.id)){
+                res.render("edituser", {user:foundUser});   
+            }else{
+                req.flash("error", "You are not allowed to do that!")
+                res.redirect("back");
+            }
         }
     })
 })
@@ -109,9 +125,11 @@ app.put("/users/profile/:id",function(req, res) {
     })
     User.findByIdAndUpdate(req.params.id, editedUser ,function(err, updatedUser){
         if(err){
+            req.flash("error", err.message);
             console.log(err);
         }else{
             passport.authenticate("local")(req,res,function(){
+            req.flash("success", "Succesfully edited your profile");    
             res.redirect("/users/profile/" + req.params.id);
         })
         }
@@ -123,8 +141,10 @@ app.delete("/users/profile/:id", function(req,res){
     User.findByIdAndRemove(req.params.id, function(err, foundUser){
         if(err){
             console.log(err);
+            req.flash("error", err.message);
         }else{
             console.log("User Deleted: " + foundUser );
+            req.flash("success", "Profile Deleted");
             res.redirect("/");
         }
     })
@@ -132,7 +152,7 @@ app.delete("/users/profile/:id", function(req,res){
 
 
 
-app.get("/pickup", function(req,res){
+app.get("/pickup", isLoggedIn,function(req,res){
     res.render("pickup");
 })
 
@@ -179,8 +199,11 @@ app.post("/teams/newteam", function(req,res){
     Teams.create(newTeam, function(err, team){
         if(err){
             console.log(err);
+            req.flash("error", err.message);
+            res.redirect("back");
         }else{
             console.log("Team created: " + team.name);
+            req.flash("success", "Team " + team.name  + "created");
             res.redirect("/");
         }
     })
@@ -205,21 +228,22 @@ app.get("/teams/:team_id", function(req, res) {
     } )
 })
 
-app.get("/teams/:team_id/edit", function(req, res) {
+app.get("/teams/:team_id/edit", checkTeamOwnership,  function(req, res) {
     Teams.findById(req.params.team_id, function(err, foundTeam) {
         if(err){
             console.log(err);
         }else{
-            res.render("editteam", {team:foundTeam});
+            res.render("editteam", {team:foundTeam});    
         }
     })
 })
 
-app.put("/teams/:team_id", function(req, res) {
+app.put("/teams/:team_id", checkTeamOwnership, function(req, res) {
     Teams.findByIdAndUpdate(req.params.team_id, req.body.team, function(err, team) {
         if(err){
             console.log(err);
         }else{
+            req.flash("success", "Succesfully edited Team");
             res.redirect("/teams/" + req.params.team_id);
         }
     })
@@ -227,11 +251,12 @@ app.put("/teams/:team_id", function(req, res) {
 
 
 
-app.delete("/teams/:team_id", function(req, res) {
+app.delete("/teams/:team_id", checkTeamOwnership, function(req, res) {
     Teams.findByIdAndRemove(req.params.team_id, function(err, foundTeam){
         if(err){
             console.log(err);
         }else{
+            req.flash("success", "Succesfully deleted Team");
             res.redirect("/teams");
         }
     })
@@ -260,7 +285,9 @@ app.post("/teams/:team_id/request", isLoggedIn,function(req,res){
             Requests.create(newRequest, function(err, request){
                 if(err){
                     console.log(err);
+                    req.flash("error", err.message);
                 }else{
+                    req.flash("success", "Succesfully requested to Join team " + foundTeam.name + "!")
                     console.log("Request created: " + request)
                     res.redirect("/teams/" + req.params.team_id);
                 }
@@ -274,7 +301,7 @@ app.get("/teams/:team_id/addplayer/:request_id", function(req,res){
     res.redirect("/teams");
 })
 
-app.post("/teams/:team_id/addplayer/:request_id", function(req,res){
+app.post("/teams/:team_id/addplayer/:request_id", checkTeamOwnership, function(req,res){
     Requests.findById(req.params.request_id, function(err, foundRequest) {
         if(err){
             console.log(err + "Error in 1st");
@@ -289,6 +316,7 @@ app.post("/teams/:team_id/addplayer/:request_id", function(req,res){
                         foundTeam.players.push(newPlayer);
                         foundTeam.save();
                         console.log("Player added: " + username);
+                        req.flash("success", "Player " + foundRequest.author.username + "added to your team!");
                         foundRequest.delete();
                         res.redirect("/teams/"+foundTeam._id);    
                 }
@@ -297,7 +325,7 @@ app.post("/teams/:team_id/addplayer/:request_id", function(req,res){
     })
 })
 
-app.delete("/teams/:team_id/addplayer/:request_id", function(req,res){
+app.delete("/teams/:team_id/addplayer/:request_id", checkTeamOwnership, function(req,res){
     Teams.findById(req.params.team_id, function(err, foundTeam) {
         if(err){
             console.log(err);
@@ -306,6 +334,7 @@ app.delete("/teams/:team_id/addplayer/:request_id", function(req,res){
                 if(err){
                     console.log(err);
                 }else{
+                    req.flash("success", "Succesfully deleted player");
                     res.redirect("/teams/" + foundTeam._id);
                     console.log("REQUEST DELETED");
                 }
@@ -316,7 +345,7 @@ app.delete("/teams/:team_id/addplayer/:request_id", function(req,res){
 })
 
 
-app.post("/teams/:team_id/removeplayer/:player_id", function(req, res) {
+app.post("/teams/:team_id/removeplayer/:player_id", checkTeamOwnership, function(req, res) {
     Teams.findById(req.params.team_id, function(err, foundTeam) {
         if(err){
             console.log(err);
@@ -356,8 +385,10 @@ app.post("/leagues/newleague", function(req, res) {
     var newLeague = {name: name, image:image, author:author};
     Leagues.create(newLeague, function(err, league){
         if(err){
+            req.flash("error", err.message);
             console.log(err);
         }else{
+            req.flash("success", "Succesfully created League");
             res.redirect("/leagues");
             console.log("League Created: " + league);
         }
@@ -374,7 +405,7 @@ app.get("/leagues/:league_id", function(req,res){
     })
 })
 
-app.get("/leagues/:league_id/edit", function(req,res){
+app.get("/leagues/:league_id/edit", isLoggedIn, checkLeagueOwnership, function(req,res){
     Leagues.findById(req.params.league_id, function(err, foundLeague){
         if (err){
             console.log(err)
@@ -389,16 +420,18 @@ app.put("/leagues/:league_id", function(req,res){
         if(err){
             console.log(err);
         }else{
+            req.flash("success", "Succesfully edited League");
             res.redirect("/leagues/" + req.params.league_id);
         }
     })
 })
 
-app.delete("/leagues/:league_id", function(req,res){
+app.delete("/leagues/:league_id", checkLeagueOwnership, function(req,res){
     Leagues.findByIdAndRemove(req.params.league_id, function(err){
         if(err){
             console.log(err)
         }else{
+            req.flash("success", "Succesfully deleted League");
             res.redirect("/leagues");
         }
     })
@@ -422,6 +455,7 @@ app.post("/register", function(req, res){
             res.redirect("/register");
         }
         passport.authenticate("local")(req,res,function(){
+            req.flash("success", "Succesfully Registered");
             res.redirect("/");
         })
     })
@@ -441,25 +475,72 @@ app.post("/login", passport.authenticate("local",
 
 app.get("/logout", function(req,res){
     req.logout();
+    req.flash("success", "Succesfully logged out ")
     res.redirect("/");
 })
 
 
+/////// MY MIDDLEWARES //////
+
+
+function checkTeamOwnership(req, res, next){
+    Teams.findById(req.params.team_id, function(err, foundTeam) {
+        if(err){
+            req.flash("error", err.message);    
+            res.redirect("back");
+        }else{
+            if(foundTeam.author.id.equals(req.user._id)){
+                next();
+            }else{
+                req.flash("error", "You are not the owner of this team");
+                res.redirect("back");
+            }
+        }
+        
+    })
+}
+
+function checkLeagueOwnership(req, res, next){
+    Leagues.findById(req.params.league_id, function(err, foundLeague) {
+        if(err){
+            req.flash("error", err.message)
+            res.redirect("back")
+        }else{
+            if(foundLeague.author.id.equals(req.user._id)){
+                next();
+            }else{
+                req.flash("error", "You are not the author of this league");
+                res.redirect("back");
+            }
+        }
+    })
+}
 
 
 function isLoggedIn(req, res, next){
     if(req.isAuthenticated()){
         return next();
     }else{
+        req.flash("error", "You need to login ")
         res.redirect("/login");
     }
 }
 
 
 
+ 
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Our app is running on port ${ PORT }`);
+});
+
+// app.listen(process.env.PORT || 3000, function(){
+//   console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+// });
 
 
-app.listen(process.env.PORT, process.env.IP, function(){
-    console.log("Listening to Just4Kickz Webpage");
-})
+
+// app.listen(process.env.PORT, process.env.IP, function(){
+//     console.log("Listening to Just4Kickz Webpage");
+// })
     

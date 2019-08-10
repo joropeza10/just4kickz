@@ -1,38 +1,69 @@
 <% include ../partials/header %> 
 
 
+
 <div class="container">
-    <div>
+
         <h1>USER PROFILE "<%=user.username%>"</h1>
         <hr>
+        
+        <!--EDIT BUTTONS-->
+        
         <% if(currentUser && user._id.equals(currentUser._id)){ %>
             <div class="row">
-            <div class="col-lg-6">
-              <a href="/users/profile/<%=user._id%>/edit" class="btn btn-primary">EDIT PROFILE</a>
-            <form action="/users/profile/<%=user._id%>?_method=DELETE" method="POST">
-            <button class="btn btn-danger">DELETE PROFILE</button>
-             </form>  
-            <a class="btn btn-warning" href="/teams/newteam">CREATE TEAM</a>  
+                    <a  id="profileBtn" href="/users/profile/<%=user._id%>/edit" class="btn btn-primary">EDIT PROFILE</a>
+                    <form action="/users/profile/<%=user._id%>?_method=DELETE" method="POST">
+                    <button id="profileBtn" class="btn btn-danger">DELETE PROFILE</button>
+                    </form>  
+                    <a  id="profileBtn" class="btn btn-warning" href="/teams/newteam">CREATE TEAM</a> 
             </div>
-             </div>
         <% } %>
-        <div>
-            <h2><%=user.firstName%></h2>
-            <h2><%=user.lastName%></h2>
-            <h2><%=user.email%></h2>
-            <h2><%=user.phone%></h2>
+        <br>
+        
+        <!--PROFILE CARD-->
+        
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6 img">
+              <img src="http://www.personalbrandingblog.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640-300x300.png"  alt="" class="img-rounded">
+            </div>
+            <div class="col-md-6 details">
+              <blockquote>
+                <h5>Username: <%=user.username%></h5>
+                <small><cite title="Source Title"><i class="icon-map-marker"></i></cite></small>
+              </blockquote>
+              <p>
+                Name: <%=user.firstName %>  <%=user.lastName %> <br>
+                e-mail: <%=user.email %> <br>
+                Phone: <%=user.phone %> <br>
+              </p>
+            </div>
+          </div>
         </div>
-        <div>
+        <hr>
+        
+     <!--TEAMS CARDS-->
+     
+        <div class="text-center">
             <h3>CREATED TEAMS:</h3>
-            <% team.forEach(function(team){ %>
-                <h2><%=team.name%></h2>
-                <img src="<%=team.image%>">
-                <h6><em><a href="/teams/<%=team._id%>">Team Profile</a></em></h6>
-            <% }) %>
+            <div class="row text-center justify-content-around">
+                <% team.forEach(function(team){ %>
+                    <div class="col-md-3 col-sm-6">
+                       <div class="card" style="width: 18rem;">
+                          <img class="card-img-top" src=<%=team.image%> alt="Card image cap">
+                          <div class="card-body">
+                            <h5 class="card-title"><%=team.name%></h5>
+                            <a href="/teams/<%=team._id%>" class="btn btn-primary">TEAM PROFILE</a>
+                          </div>
+                        </div> 
+                    </div>
+                <% }) %>
+            </div>
         </div>
         
     </div>
 </div>
+
 
 
 

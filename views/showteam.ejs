@@ -1,44 +1,96 @@
 <%include ../partials/header %>
 
 <div class= "container">
+    
     <h1>TEAM "<%=team.name%>" </h1>
-    <img src="<%=team.image%>">
-    <h6><em>Created by <%= team.author.username %></em></h6>
-    <h5>PLAYERS:</h5>
-    <% team.players.forEach(function(player){ %>
-        <p><%=player.username%></p>
-        <% if(currentUser && team.author.id.equals(currentUser._id)){ %>
-            <form action="/teams/<%=team._id%>/removeplayer/<%=player._id%>" method="POST">
-                <button class="btn btn-danger">Remove Player</button>
-            </form>
-            <hr>
-        <% } %>
-    <% }) %>
+    
+    <!--EDIT TEAM BUTTONS-->
+
     <% if(currentUser && team.author.id.equals(currentUser._id)){ %>
-        <% requests.forEach(function(requests){ %>
-            <p><b><%=requests.username%> </b> requested to join your team!</p>
-            <form action="/teams/<%=team._id%>/addplayer/<%=requests._id%>" method="POST">
-                <button class="btn btn-success">ACCEPT</button>    
+        <div class="row">
+            <a id="profileBtn" href="/teams/<%=team._id%>/edit" class="btn btn-warning">EDIT TEAM</a>
+            <form action="/teams/<%=team._id%>?_method=DELETE" method="POST">
+            <button id="profileBtn" class="btn btn-danger">DELETE TEAM</button>
             </form>
-            <form action="/teams/<%=team._id%>/addplayer/<%=requests._id%>?_method=DELETE" method="POST">
-                <button class="btn btn-danger">REJECT</button>
-            </form>
-        <% }) %>
-        <hr>
-        <a href="/teams/<%=team._id%>/edit" class="btn btn-warning">EDIT TEAM</a>
-        <form action="/teams/<%=team._id%>?_method=DELETE" method="POST">
-        <button class="btn btn-danger">DELETE TEAM</button>
-        </form>
+        </div>
+    <% } %>
+    
+    <!--TEAM CARD-->
+    
+    <div class="card" style="width: 18rem;">
+      <img class="card-img-top" src=<%=team.image%> alt="Card image cap">
+      <div class="card-body">
+        <h5 class="card-title"><%=team.name%></h5>
+        <p class="card-text">
+            <h6>Players:</h6>
+            <% team.players.forEach(function(player){ %>
+                <a href="/users/profile/<%=player.id%>"><%=player.username%></a><br />
+                <% if(currentUser && team.author.id.equals(currentUser._id)){ %>
+                    <form action="/teams/<%=team._id%>/removeplayer/<%=player.id%>" method="POST">
+                        <button class="btn btn-danger">Remove Player</button>
+                    </form>
+                    <hr>
+                <% } %>
+            <% }) %>
+        </p>
+        <p class="card-text">
+            <% if(currentUser && team.author.id.equals(currentUser._id)){ %>
+                <% requests.forEach(function(requests){ %>
+                    <p><b><%=requests.username%> </b> requested to join your team!</p>
+                    <form action="/teams/<%=team._id%>/addplayer/<%=requests._id%>" method="POST">
+                        <button class="btn btn-success">ACCEPT</button>    
+                    </form>
+                    <form action="/teams/<%=team._id%>/addplayer/<%=requests._id%>?_method=DELETE" method="POST">
+                        <button class="btn btn-danger">REJECT</button>
+                    </form>
+                <% }) %>
+                
+            <% } %>
+        </p>
+      </div>
+    </div>
+    
+    
+    <% if(currentUser){ %>
+        <form action="/teams/<%=team._id%>/request" method="POST">
+        <button class="btn btn-primary">REQUEST TO JOIN TEAM</button>
+        </form> 
     <% } %>
     
     
-    <form action="/teams/<%=team._id%>/request" method="POST">
-        <button class="btn btn-primary">REQUEST TO JOIN TEAM</button>
-    </form>  
     
-   
     
-</div>
+    
+    
+    
+    
+    <!--//////////////////////-->
+    
+    
+    
+<!--    <img src="<%=team.image%>">-->
+<!--    <h6><em>Created by <%= team.author.username %></em></h6>-->
+<!--    <h5>PLAYERS:</h5>-->
+<!--    <% var x = 0 %>-->
+<!--    <% team.players.forEach(function(player){ %>-->
+<!--        <a href="/users/profile/<%=player.id%>"><%=player.username%></a><br />-->
+<!--        <% if(currentUser && team.author.id.equals(currentUser._id)){ %>-->
+<!--            <form action="/teams/<%=team._id%>/removeplayer/<%=player.id%>" method="POST">-->
+<!--                <button class="btn btn-danger">Remove Player</button>-->
+<!--            </form>-->
+<!--            <hr>-->
+<!--        <% } %>-->
+<!--    <% }) %>-->
+    
+    
+    
+<!--    <% if(currentUser){ %>-->
+<!--        <form action="/teams/<%=team._id%>/request" method="POST">-->
+<!--        <button class="btn btn-primary">REQUEST TO JOIN TEAM</button>-->
+<!--        </form> -->
+<!--    <% } %>-->
+     
+<!--</div>-->
 
 
 

@@ -1,22 +1,38 @@
 <% include ../partials/header %>
 
-
-
 <div class="container">
-    <div class="row">
-        <div class="col-lg-12">   
-            <h2 style="text-align: center"><%= league.name %>League</h2>
-            <img src=<%=league.image %>>
-        </div>
-        <div>
-            <h2>TEAMS</h2>
+    <div class="d-flex justify-content-center">
+        <div class="col-md-3 col-sm-6"> 
+            <h1><%=league.name%></h1>
         </div>
     </div>
-    <div class="row text-center d-flex justify-content-around">
+    <div class="row text-center d-flex justify-content-center">
         
+        <% if(currentUser && league.author.id.equals(currentUser._id)){ %>
+            <div class="row">
+                <a id="profileBtn" href="/teams/<%=league._id%>/edit" class="btn btn-warning">EDIT LEAGUE</a>
+                <form action="/teams/<%=league._id%>?_method=DELETE" method="POST">
+                <button id="profileBtn" class="btn btn-danger">DELETE LEAGUE</button>
+                </form>
+            </div>
+        <% } %>
+    
+    <!--TEAM CARD-->
+    
+    <div class="card" style="width: 18rem;">
+      <img class="card-img-top" src=<%=league.image%> alt="Card image cap">
+      <div class="card-body">
+        <h5 class="card-title"><%=league.name%></h5>
+      </div>
     </div>    
     
 </div>
+    </div>
+    
+
+ <!--EDIT TEAM BUTTONS-->
+
+
 
 
 <% include ../partials/footer %>
