@@ -1,0 +1,216 @@
+body{
+  height: 100%;
+  /*background: url("/images/horizon-light-structure-sky-skyline-field-1398313-pxhere.com.jpg");*/
+  /*background-repeat: repeat-x;*/
+  /*background-size: cover;*/
+  /*background-color: aliceblue;*/
+  background-image: linear-gradient(aliceblue, #0a3d62);
+  padding-top: 60px;
+
+}
+
+
+#bg {
+  position: fixed; 
+  top: -50%; 
+  left: -50%; 
+  width: 200%; 
+  height: 200%;
+}
+#bg img {
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  bottom: 0; 
+  margin: auto; 
+  min-width: 50%;
+  min-height: 50%;
+}
+
+
+.jumbotron{
+    /*background: url("/images/grass-structure-sport-game-green-soccer-1331781-pxhere.com.jpg") no-repeat center center; */
+    /*background-size: cover;*/
+    background-color: black;
+    
+    /*grass-structure-sport-game-green-soccer-1331781-pxhere.com.jpg*/
+}
+
+.display-4 {
+    font-size: 4;
+    font-weight: 500;
+    line-height: 1.2;
+    color: white;
+}
+
+.lead{
+    color: aliceblue;
+}
+
+#jumbopar{
+    color: aliceblue;
+}
+
+.jumbotron .img {
+    margin-bottom: 0px;
+    opacity: 0.6;
+    color: #fff;
+    background: #000 url("/images/grass-structure-sport-game-green-soccer-1331781-pxhere.com.jpg") center no-repeat;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    overflow: hidden;
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:1;
+}
+
+
+.jumbotron h2 {margin-top:0;}
+.jumbotron {
+  position:relative;
+  padding-top:100px;
+  padding-bottom:100px;
+}
+.jumbotron .container {
+  position:relative;
+  z-index:2;
+}
+
+@media screen and (max-width: 768px) {
+  .jumbotron {
+    padding-top:20px;
+    padding-bottom:20px;
+  }
+}
+
+
+
+.flip-card {
+  background-color: transparent;
+  width: 300px;
+  height: 230px;
+  perspective: 1000px; /* Remove this if you don't want the 3D effect */
+}
+
+/* This container is needed to position the front and back side */
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+/* Do an horizontal flip when you move the mouse over the flip box container */
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* Position the front and back side */
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+/* Style the front side (fallback if image is missing) */
+.flip-card-front {
+  background-color: #3c6382;
+  color: aliceblue;
+}
+
+/* Style the back side */
+.flip-card-back {
+  background-color: #3c6382;
+  color: aliceblue;
+  transform: rotateY(180deg);
+}
+
+#btnCards{
+    display: flex; 
+    justify-content: center;
+}
+
+#cardBtn{
+  color: white;
+  background-color: #60a3bc;
+  background-image: #60a3bc;
+}
+
+.btn{
+    margin-top: 5px;
+    padding-bottom: 10px;
+}
+
+.cardImage{
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+}
+
+#row{
+  margin-top: 50px;
+  margin-bottom: 100px;
+}
+
+#row2{
+  margin-top: 50px;
+}
+
+#profileBtn{
+  margin: 5px;
+}
+
+.img-rounded{
+  width: 200px;
+  height: 200px;
+}
+
+/*.container{*/
+/*    padding:5%;*/
+/*}*/
+.container .img{
+    text-align:center;
+}
+.container .details{
+    border-left:3px solid #ded4da;
+}
+.container .details p{
+    font-size:15px;
+    font-weight:bold;
+}
+
+
+#footer {
+    margin-top: 100px;
+    bottom: 0px;
+    background-color: #0a3d62;
+    width: 100%;
+    text-align: center;
+    font-size: small;
+    color: aliceblue;
+}
+
+#jumbo2 .img {
+    margin-bottom: 0px;
+    opacity: 0.7;
+    color: #fff;
+    background: #000 url("https://c.pxhere.com/images/4d/f1/381ae38450f5d1c2ab3332fe32b8-1426191.jpg!d") center no-repeat;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    overflow: hidden;
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:1;
+}
+
+#jumbo2{
+  background: black;
+}
